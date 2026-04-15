@@ -318,7 +318,7 @@
         extensionNote: "Current integrated dataset ends in December 2026, but additional history can be acquired and appended if needed.",
         segments: [
           { start: "2024-03-01", end: "2024-10-31", type: "current", label: "Older archive available on request" },
-          { start: "2024-10-31", end: "2026-11-01", type: "available_on_request", label: "Additional future period available on request" }
+          { start: "2024-10-31", end: { relativeTo: "today" }, type: "available_on_request", label: "Additional future period available on request" }
         ],
         links: [
           { label: "FMI", url: "https://en.ilmatieteenlaitos.fi/" },
@@ -351,7 +351,7 @@
         extensionNote: "Data is available only in real time format - twice per day we collect 12 hours of data. Finavia doesn't store historical data in this open source",
         segments: [
           { start: "2025-05-28", end: "2025-08-29", type: "current"},
-          { start: "2026-04-08", end: "2026-11-01", type: "available_on_request"}
+          { start: "2026-04-08", end: { relativeTo: "today" }, type: "available_on_request"}
         ],
         links: [
           { label: "Finavia public API", url: "https://apiportal.finavia.fi/" }
@@ -367,7 +367,7 @@
         extensionNote: "Possible to obtain more data, but the source is commercial and not free. Also historical data is limited for up to 6 month back?",
         segments: [
           { start: "2024-02-01", end: "2024-11-01", type: "current"},
-          { start: "2025-10-14", end: "2026-04-14", type: "available_on_request"}
+          { start: { relativeTo: "today", months: -6 }, end: { relativeTo: "today" }, type: "available_on_request" }
         ],
         links: [
           { label: "Aviation Edge", url: "https://dev.azure.com/universityoflapland/Untangling%20People%20Flow/_wiki/wikis/Untangling-People-Flow.wiki/4/Description-(Silver)" },
@@ -383,7 +383,7 @@
         description: "Clean version of AGC LiDAR data from departure hall. Contains tracks of passengers, their speed, direction, positions and size",
         extensionNote: "Contract ending in October 2026?",
         segments: [
-          { start: "2025-04-05", end: "2026-11-01", type: "current"}
+          { start: "2025-04-05", end: { relativeTo: "today" }, type: "current"}
         ],
         links: [
           { label: "AGC Flow", url: "https://www.flow-analytics.io/" },
@@ -434,8 +434,29 @@
     const rowHeight = 70;
 
     function parseDate(value) {
-      return new Date(value + 'T00:00:00');
+  if (typeof value === 'string') {
+    return new Date(value + 'T00:00:00');
+  }
+
+  if (value && value.relativeTo === 'today') {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+
+    if (typeof value.months === 'number') {
+      d.setMonth(d.getMonth() + value.months);
     }
+    if (typeof value.days === 'number') {
+      d.setDate(d.getDate() + value.days);
+    }
+    if (typeof value.years === 'number') {
+      d.setFullYear(d.getFullYear() + value.years);
+    }
+
+    return d;
+  }
+
+  throw new Error('Unsupported date format');
+}
 
     function formatDate(date, scale) {
       const y = date.getFullYear();
