@@ -351,7 +351,7 @@
         extensionNote: "Data is available only in real time format - twice per day we collect 12 hours of data. Finavia doesn't store historical data in this open source",
         segments: [
           { start: "2025-05-28", end: "2025-08-29", type: "current"},
-          { start: "2026-04-08", end: { relativeTo: "today" }, type: "available_on_request"}
+          { start: "2026-04-08", end: { relativeTo: "today" }, type: "current"}
         ],
         links: [
           { label: "Finavia public API", url: "https://apiportal.finavia.fi/" }
@@ -647,7 +647,7 @@
       });
       const selectedItem = dataSources.find(item => item.id === selectedId);
       drawSelectionBoundaries(selectedItem, minDate, maxDate);
-      
+
       dataSources.forEach((item, index) => {
         const y = margin.top + index * rowHeight + 28;
         const isActive = item.id === selectedId;
