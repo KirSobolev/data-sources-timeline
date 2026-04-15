@@ -457,6 +457,47 @@
 
   throw new Error('Unsupported date format');
 }
+    function drawSelectionBoundaries(item, minDate, maxDate) {
+  if (!item) return;
+
+  const boundaryDates = [];
+
+  item.segments.forEach(segment => {
+    boundaryDates.push({
+      date: parseDate(segment.start),
+      kind: 'start'
+    });
+    boundaryDates.push({
+      date: parseDate(segment.end),
+      kind: 'end'
+    });
+  });
+
+  boundaryDates.forEach(boundary => {
+    const x = xScale(boundary.date, minDate, maxDate);
+
+    const line = createSvgElement('line', {
+      x1: x,
+      y1: margin.top,
+      x2: x,
+      y2: height - margin.bottom,
+      stroke: boundary.kind === 'start' ? '#2563eb' : '#6b7280',
+      'stroke-width': 2,
+      'stroke-dasharray': '5,5',
+      opacity: 0.9
+    });
+    svg.appendChild(line);
+
+    const label = createSvgElement('text', {
+      x,
+      y: height - margin.bottom + 18,
+      'text-anchor': 'middle',
+      class: 'grid-label'
+    });
+    label.textContent = boundary.kind === 'start' ? 'Start' : 'End';
+    svg.appendChild(label);
+  });
+}
 
     function formatDate(date, scale) {
       const y = date.getFullYear();
@@ -604,7 +645,9 @@
         label.textContent = formatDate(tick, scale);
         svg.appendChild(label);
       });
-
+      const selectedItem = dataSources.find(item => item.id === selectedId);
+      drawSelectionBoundaries(selectedItem, minDate, maxDate);
+      
       dataSources.forEach((item, index) => {
         const y = margin.top + index * rowHeight + 28;
         const isActive = item.id === selectedId;
