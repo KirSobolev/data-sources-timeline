@@ -331,11 +331,10 @@
         owner: "Finavia",
         granularity: "Per flight",
         status: "Historical",
-        description: "Data contains historical information about flights. Destination, flight numbers, airline and amount of passengers",
-        extensionNote: "Waiting for the new data package from Finavia",
+        description: "Data contains historical information about arrival and departure flights. Destination and amount of passengers (local and transfer). First dataset has entrance timing data from boarding pass scanner, while second dataset contains airline and glight number.",
         segments: [
           { start: "2023-11-01", end: "2024-10-31", type: "current"},
-          { start: "2025-04-01", end: "2026-04-14", type: "available_on_request"}
+          { start: "2025-04-01", end: "2026-03-31", type: "current"}
         ],
         links: [
           { label: "Wiki", url: "https://dev.azure.com/universityoflapland/Untangling%20People%20Flow/_wiki/wikis/Untangling-People-Flow.wiki/43/flights" }
